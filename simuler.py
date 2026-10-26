@@ -2,6 +2,7 @@
 import argparse
 import getpass
 import json
+import os
 import random
 import time
 from urllib.error import HTTPError, URLError
@@ -21,7 +22,8 @@ minimum = PLAGES[args.type][0] if args.minimum is None else args.minimum
 maximum = PLAGES[args.type][1] if args.maximum is None else args.maximum
 if minimum > maximum or not 1 <= args.nombre <= 100:
     parser.error('Minimum <= maximum; nombre compris entre 1 et 100.')
-jeton = getpass.getpass('Collez le jeton API (saisie invisible) : ').strip()
+
+jeton = os.environ.get('JETON_API', '').strip() or getpass.getpass('Collez le jeton API (saisie invisible) : ').strip()
 reussies = 0
 try:
     for numero in range(1, args.nombre + 1):
