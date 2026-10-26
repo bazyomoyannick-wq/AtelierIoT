@@ -1,0 +1,1523 @@
+{
+  "info": {
+    "name": "Atelier IoT — Lumière et Distance",
+    "_postman_id": "atelier-iot-yannick",
+    "description": "Tests des codes HTTP, des rôles admin/utilisateur, de la validation et simulation de mesures. Remplir admin_user et admin_password, puis exécuter la collection dans l'ordre (Run collection).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - Comptes et jetons",
+      "item": [
+        {
+          "name": "Jeton admin (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.collectionVariables.set('admin_token', pm.response.json().token);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('suffixe', Date.now());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/jeton/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "jeton",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{admin_user}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Jeton mauvais mot de passe (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/jeton/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "jeton",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"{{admin_user}}\",\n  \"password\": \"mauvais\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Créer compte utilisateur (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('user_token', pm.response.json().token);",
+                  "pm.test('Rôle utilisateur', () => pm.expect(pm.response.json().role).to.eql('utilisateur'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inscription/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inscription",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user{{suffixe}}\",\n  \"password\": \"Serre-Lux-2026!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Créer compte en double (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inscription/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inscription",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user{{suffixe}}\",\n  \"password\": \"Serre-Lux-2026!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mot de passe trop simple (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/inscription/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "inscription",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"faible{{suffixe}}\",\n  \"password\": \"123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Lister objets sans jeton (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - CRUD et validation",
+      "item": [
+        {
+          "name": "Créer objet (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('objet_id', pm.response.json().donnees.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Serre {{suffixe}}\",\n  \"emplacement\": \"Local 101\",\n  \"actif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Créer objet sans nom (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"\",\n  \"emplacement\": \"Local 101\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Lire l'objet (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/{{objet_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "{{objet_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Modifier l'objet PATCH (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/{{objet_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "{{objet_id}}",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"emplacement\": \"Local 102\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Objet inexistant (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/999999/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "999999",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Créer capteur luminosité (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('capteur_id', pm.response.json().donnees.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/capteurs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "capteurs",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objet\": \"{{objet_id}}\",\n  \"nom\": \"Lumière {{suffixe}}\",\n  \"type_mesure\": \"luminosite\",\n  \"seuil_alerte\": 300\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Capteur seuil hors plage (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/capteurs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "capteurs",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objet\": \"{{objet_id}}\",\n  \"nom\": \"Distance {{suffixe}}\",\n  \"type_mesure\": \"distance\",\n  \"seuil_alerte\": 900\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Créer actionneur lampe (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('actionneur_id', pm.response.json().donnees.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/actionneurs/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "actionneurs",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"objet\": \"{{objet_id}}\",\n  \"nom\": \"Lampe {{suffixe}}\",\n  \"type_action\": \"lampe\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Mesures",
+      "item": [
+        {
+          "name": "Mesure valide (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capteur\": \"{{capteur_id}}\",\n  \"valeur\": 450.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mesure sous le seuil → alerte (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.test('en_alerte = true', () => pm.expect(pm.response.json().en_alerte).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capteur\": \"{{capteur_id}}\",\n  \"valeur\": 120\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mesure impossible 20000 lux (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capteur\": \"{{capteur_id}}\",\n  \"valeur\": 20000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Mesure texte (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capteur\": \"{{capteur_id}}\",\n  \"valeur\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Historique du capteur (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/?capteur={{capteur_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "capteur",
+                  "value": "{{capteur_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Supprimer une mesure (405)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 405', () => pm.response.to.have.status(405));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                "1",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Actionneur",
+      "item": [
+        {
+          "name": "GET sur commander (405)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 405', () => pm.response.to.have.status(405));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/actionneurs/{{actionneur_id}}/commander/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "actionneurs",
+                "{{actionneur_id}}",
+                "commander",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Allumer la lampe (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('etat = true', () => pm.expect(pm.response.json().etat).to.be.true);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/actionneurs/{{actionneur_id}}/commander/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "actionneurs",
+                "{{actionneur_id}}",
+                "commander",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"etat\": \"on\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Éteindre la lampe (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/actionneurs/{{actionneur_id}}/commander/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "actionneurs",
+                "{{actionneur_id}}",
+                "commander",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"etat\": \"off\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "État invalide (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/actionneurs/{{actionneur_id}}/commander/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "actionneurs",
+                "{{actionneur_id}}",
+                "commander",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"etat\": \"peut-etre\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Journal des commandes (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/commandes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "commandes",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5 - Suppressions et historique",
+      "item": [
+        {
+          "name": "Créer objet temporaire (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('temp_id', pm.response.json().donnees.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Temporaire {{suffixe}}\",\n  \"emplacement\": \"Test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Utilisateur supprime → interdit (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/{{temp_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "{{temp_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin supprime (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/{{temp_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "{{temp_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin supprime objet protégé (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/objets/{{objet_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "objets",
+                "{{objet_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Historique suppressions utilisateur (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message d\\'erreur présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppressions/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "suppressions",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Historique suppressions admin (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Trace avec auteur', () => pm.expect(pm.response.json().results[0]).to.have.property('nom_utilisateur'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/suppressions/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "suppressions",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "6 - Simulation (lancer ce dossier avec 10 itérations)",
+      "item": [
+        {
+          "name": "Envoyer une mesure aléatoire (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Valeur aléatoire de luminosité entre 0 et 1000 lux",
+                  "pm.collectionVariables.set('valeur_simulee', (Math.random()*1000).toFixed(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/mesures/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "mesures",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capteur\": {{capteur_id}},\n  \"valeur\": {{valeur_simulee}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "admin_user",
+      "value": "admin"
+    },
+    {
+      "key": "admin_password",
+      "value": "A_REMPLIR"
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "user_token",
+      "value": ""
+    },
+    {
+      "key": "suffixe",
+      "value": ""
+    },
+    {
+      "key": "objet_id",
+      "value": ""
+    },
+    {
+      "key": "capteur_id",
+      "value": ""
+    },
+    {
+      "key": "actionneur_id",
+      "value": ""
+    },
+    {
+      "key": "temp_id",
+      "value": ""
+    },
+    {
+      "key": "valeur_simulee",
+      "value": ""
+    }
+  ]
+}
