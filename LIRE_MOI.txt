@@ -1,0 +1,97 @@
+PROG1397 - Programmation côté serveur
+Projet : Atelier IoT — Lumière et Distance (basé sur le guide « TP intégrateur Atelier IoT »)
+Nom et prénom : à compléter
+Python utilisé : à compléter
+
+======================================================================
+1. CE QUI CHANGE PAR RAPPORT AU GUIDE
+======================================================================
+Capteurs (pas de température ni d'humidité) :
+  - luminosite : photorésistance, unité lux, plage 0 à 10000
+  - distance   : ultrason HC-SR04, unité cm, plage 2 à 400
+  ALERTE quand la dernière valeur est SOUS le seuil
+  (trop sombre, ou obstacle trop proche).
+Actionneurs : lampe (DEL), barrière (servomoteur), avertisseur.
+
+Ajouts demandés :
+  - Comptes admin et utilisateur
+      * utilisateur : consulter, ajouter, modifier, commander
+      * administrateur (is_staff) : tout + supprimer + voir l'historique des suppressions
+      * page web /inscription/ et API POST /api/inscription/
+  - Historique de suppression : modèle HistoriqueSuppression
+      (type, identifiant, nom, données en JSON, qui, quand) — page /suppressions/
+      et API /api/suppressions/ (admin seulement, lecture seule)
+  - Vérification des données
+      * côté utilisateur : attributs HTML required/min/max + JavaScript qui adapte
+        la plage selon le capteur choisi (templates/inventaire/mesures.html)
+      * côté serveur : clean() des modèles, réutilisé par les formulaires ET l'API
+  - Feedback : messages Django (succès en vert, erreurs en rouge) et réponses JSON
+      {"statut": 400, "message": "...", "detail": {...}} pour chaque erreur API
+  - Codes HTTP vérifiés : 200, 201, 204, 400, 401, 403, 404, 405
+  - Simulation : simuler.py ET dossier « Simulation » de la collection Postman
+  - 15 tests automatiques (manage.py test)
+
+======================================================================
+2. INSTALLATION (Windows, PowerShell, dans le dossier du projet)
+======================================================================
+1. py -3.13 -m venv .venv
+2. .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+3. .\.venv\Scripts\python.exe manage.py migrate
+4. .\.venv\Scripts\python.exe manage.py createsuperuser      (compte ADMIN)
+5. .\.venv\Scripts\python.exe manage.py test                 (attendu : Ran 15 tests ... OK)
+6. .\.venv\Scripts\python.exe manage.py runserver
+7. Ouvrir http://127.0.0.1:8000/
+8. Créer un compte UTILISATEUR : lien « Créer un compte » sur la page de connexion.
+
+======================================================================
+3. JEU DE DONNÉES SUGGÉRÉ
+======================================================================
+Objet « Serre A » (Local 101) :
+  - Capteur « Lumière A »   luminosite, seuil 300 lux
+  - Capteur « Distance A »  distance,   seuil 20 cm
+  - Actionneur « Lampe A »  lampe
+Objet « Stationnement B » (Entrée) :
+  - Capteur « Lumière B »   luminosite, seuil 150 lux
+  - Capteur « Distance B »  distance,   seuil 10 cm
+  - Actionneur « Barrière B » barrière
+Scénario : si la luminosité passe sous 300 lux, ALERTE → l'utilisateur
+clique Marche sur la lampe. Si un véhicule est à moins de 10 cm, ALERTE
+→ commande de la barrière.
+
+======================================================================
+4. SIMULATION AVEC LE SCRIPT
+======================================================================
+Deuxième terminal :
+  .\.venv\Scripts\python.exe manage.py drf_create_token votre_identifiant
+  .\.venv\Scripts\python.exe simuler.py --capteur 1 --type luminosite --nombre 10
+  .\.venv\Scripts\python.exe simuler.py --capteur 2 --type distance --nombre 10
+Forcer une alerte :      --minimum 100 --maximum 100 --nombre 1
+Forcer un refus (400) :  --minimum 20000 --maximum 20000 --nombre 1
+(Remplacer 1 et 2 par les identifiants réels des capteurs.)
+
+======================================================================
+5. TESTS AVEC POSTMAN
+======================================================================
+1. Postman → Import → postman/AtelierIoT.postman_collection.json
+2. Onglet Variables de la collection : admin_user et admin_password
+   = le compte créé avec createsuperuser. Enregistrer.
+3. runserver doit tourner.
+4. Bouton « Run collection » → Run. Les requêtes s'exécutent dans l'ordre :
+   comptes/jetons → CRUD → mesures → actionneur → suppressions.
+   Chaque requête vérifie son code HTTP (32 requêtes, 51 vérifications).
+5. Simulation : clic droit sur le dossier « 6 - Simulation » → Run folder,
+   Iterations = 10, Delay = 2000 ms → 10 mesures aléatoires envoyées.
+
+Tableau des codes testés :
+  200 lecture / commande / jeton      201 création (compte, objet, mesure)
+  204 suppression par l'admin         400 donnée invalide, doublon, objet protégé
+  401 sans jeton                      403 utilisateur qui supprime / lit l'historique
+  404 fiche inexistante               405 GET sur commander, DELETE sur une mesure
+
+======================================================================
+6. REMISE
+======================================================================
+Ne pas remettre : .venv, .cle_locale, db.sqlite3, __pycache__, jetons.
+Données de démonstration :
+  .\.venv\Scripts\python.exe manage.py dumpdata inventaire.Objet inventaire.Capteur inventaire.Actionneur inventaire.Mesure --indent 2 --output donnees_demo.json
+Limites connues : à décrire.
