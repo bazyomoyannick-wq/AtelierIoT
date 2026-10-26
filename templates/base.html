@@ -1,0 +1,39 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atelier IoT — Lumière et Distance</title>
+  <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+  <header>
+    <h1>Atelier IoT — Lumière et Distance</h1>
+    <p>Supervision locale — données et commandes simulées</p>
+    {% if user.is_authenticated %}
+    <nav aria-label="Navigation principale">
+      <a href="{% url 'tableau' %}">Tableau de bord</a>
+      <a href="{% url 'liste' 'objets' %}">Objets</a>
+      <a href="{% url 'liste' 'capteurs' %}">Capteurs</a>
+      <a href="{% url 'liste' 'actionneurs' %}">Actionneurs</a>
+      <a href="{% url 'mesures' %}">Mesures</a>
+      <a href="{% url 'journal' %}">Commandes</a>
+      {% if user.is_staff %}
+      <a href="{% url 'suppressions' %}">Suppressions</a>
+      <a href="{% url 'inscription' %}">Créer un compte</a>
+      {% endif %}
+    </nav>
+    <form method="post" action="{% url 'logout' %}">
+      {% csrf_token %}
+      <span>Connecté : {{ user.username }} ({% if user.is_staff %}administrateur{% else %}utilisateur{% endif %})</span>
+      <button>Se déconnecter</button>
+    </form>
+    {% endif %}
+  </header>
+  <main>
+    {% for message in messages %}<p role="status" class="message {{ message.tags }}">{{ message }}</p>{% endfor %}
+    {% block contenu %}{% endblock %}
+  </main>
+</body>
+</html>

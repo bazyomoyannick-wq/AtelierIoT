@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Historique des suppressions</h2>
+<p>Réservé aux administrateurs. Chaque ligne garde les données de la fiche au moment de sa suppression.</p>
+<div class="tableau"><table>
+<thead><tr><th>Type</th><th>Identifiant</th><th>Nom</th><th>Données conservées</th><th>Supprimé par</th><th>Date locale</th></tr></thead>
+<tbody>{% for s in page %}
+<tr><td>{{ s.type_element }}</td><td>{{ s.element_id }}</td><td>{{ s.nom }}</td>
+<td><code>{{ s.donnees }}</code></td><td>{{ s.nom_utilisateur }}</td><td>{{ s.date|date:'d/m/Y H:i:s' }}</td></tr>
+{% empty %}<tr><td colspan="6">Aucune suppression.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p>Page {{ page.number }} sur {{ page.paginator.num_pages }}.
+{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">Précédente</a>{% endif %}
+{% if page.has_next %}<a href="?page={{ page.next_page_number }}">Suivante</a>{% endif %}</p>
+{% endblock %}

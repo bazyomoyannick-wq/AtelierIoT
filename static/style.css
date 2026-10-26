@@ -1,0 +1,22 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f4f6f2; color: #1d2a1f; font: 17px/1.6 Arial, sans-serif; }
+header { background: #3b2a5c; color: white; padding: 1.5rem; }
+header a { color: #fff; }
+nav { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem; }
+main { max-width: 1080px; margin: 1.5rem auto; padding: 1.5rem; background: white; }
+a { color: #0657a3; }
+input, select, textarea { display: block; width: 100%; max-width: 600px; padding: .6rem; font: inherit; }
+input[type=checkbox] { width: auto; }
+input:invalid { border: 2px solid #a51624; }
+button { background: #075c64; color: white; padding: .6rem 1rem; border: 0; border-radius: 5px; font: inherit; cursor: pointer; margin: .3rem 0; }
+button:focus, a:focus, input:focus, select:focus { outline: 3px solid #bb7200; outline-offset: 2px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { border: 1px solid #ccd7e2; padding: .65rem; text-align: left; vertical-align: top; }
+th { background: #e5edf5; }
+code { font-size: .8rem; word-break: break-word; }
+.tableau { overflow-x: auto; }
+.message { padding: .8rem; border-left: 5px solid #075c64; background: #e6f3f1; }
+.message.error { border-left-color: #a51624; background: #fbeaec; }
+.alerte, .errorlist { color: #a51624; font-weight: bold; }
+.aide { color: #4b5b4d; font-size: .95rem; }
+.bilan { font-size: 1.25rem; }

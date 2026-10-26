@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Créer un compte</h2>
+<p>Un compte <strong>utilisateur</strong> peut consulter, ajouter, modifier et commander.
+Seul un compte <strong>administrateur</strong> peut supprimer et consulter l’historique des suppressions.</p>
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>Créer le compte</button>
+</form>
+{% endblock %}

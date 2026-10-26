@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Tableau de bord</h2>
+<p class="bilan">{{ nb_objets }} objets · {{ nb_capteurs }} capteurs · {{ nb_actionneurs }} actionneurs</p>
+<p>Une alerte signifie que la dernière valeur est <strong>strictement sous</strong> le seuil :
+trop sombre (luminosité) ou obstacle trop proche (distance). Actualisez la page pour lire les nouvelles mesures.</p>
+<div class="tableau"><table>
+<thead><tr><th>Objet</th><th>Capteur</th><th>Dernière valeur</th><th>Seuil</th><th>Date locale</th><th>État</th></tr></thead>
+<tbody>
+{% for ligne in lignes %}
+<tr>
+  <td>{{ ligne.capteur.objet }}{% if not ligne.capteur.objet.actif %} (désactivé){% endif %}</td>
+  <td><a href="{% url 'fiche' 'capteurs' ligne.capteur.pk %}">{{ ligne.capteur.nom }}</a></td>
+  <td>{% if ligne.mesure %}{{ ligne.mesure.valeur }} {{ ligne.capteur.unite }}{% else %}Aucune mesure{% endif %}</td>
+  <td>{{ ligne.capteur.seuil_alerte }} {{ ligne.capteur.unite }}</td>
+  <td>{{ ligne.mesure.date|date:'d/m/Y H:i:s' }}</td>
+  <td>{% if not ligne.mesure %}En attente{% elif ligne.alerte %}<strong class="alerte">ALERTE</strong>{% else %}Normal{% endif %}</td>
+</tr>
+{% empty %}<tr><td colspan="6">Commencez par créer un objet, puis un capteur.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Mesures</h2>
+<h3>Ajouter une mesure simulée</h3>
+<form method="post" id="form-mesure">{% csrf_token %}{{ form.as_p }}
+<p id="aide-plage" class="aide"></p>
+<button>Ajouter la mesure</button></form>
+{{ bornes|json_script:"bornes-capteurs" }}
+<script>
+// Validation côté utilisateur : adapte min/max au capteur choisi.
+// Le serveur revérifie toujours (formulaire et API).
+const bornes = JSON.parse(document.getElementById('bornes-capteurs').textContent);
+const choix = document.getElementById('id_capteur');
+const valeur = document.getElementById('id_valeur');
+const aide = document.getElementById('aide-plage');
+function majPlage() {
+  const b = bornes[choix.value];
+  if (!b) { aide.textContent = ''; return; }
+  valeur.min = b.min; valeur.max = b.max;
+  aide.textContent = `Plage acceptée : ${b.min} à ${b.max} ${b.unite}`;
+}
+choix.addEventListener('change', majPlage);
+majPlage();
+</script>
+<h3>Historique</h3>
+<form method="get">
+<label for="capteur">Filtrer par capteur</label>
+<select id="capteur" name="capteur">
+  <option value="">Tous les capteurs</option>
+  {% for capteur in capteurs %}<option value="{{ capteur.pk }}" {% if filtre == capteur.pk|stringformat:'s' %}selected{% endif %}>{{ capteur }}</option>{% endfor %}
+</select><button>Filtrer</button></form>
+<div class="tableau"><table>
+<thead><tr><th>Capteur</th><th>Valeur</th><th>Date locale</th></tr></thead>
+<tbody>{% for mesure in page %}
+<tr><td>{{ mesure.capteur.nom }}</td><td>{{ mesure.valeur }} {{ mesure.capteur.unite }}</td><td>{{ mesure.date|date:'d/m/Y H:i:s' }}</td></tr>
+{% empty %}<tr><td colspan="3">Aucune mesure.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p>Page {{ page.number }} sur {{ page.paginator.num_pages }}.
+{% if page.has_previous %}<a href="?capteur={{ filtre|urlencode }}&amp;page={{ page.previous_page_number }}">Précédente</a>{% endif %}
+{% if page.has_next %}<a href="?capteur={{ filtre|urlencode }}&amp;page={{ page.next_page_number }}">Suivante</a>{% endif %}</p>
+{% endblock %}

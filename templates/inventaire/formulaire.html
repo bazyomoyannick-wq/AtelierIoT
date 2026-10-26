@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>{{ titre }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>Enregistrer</button>
+</form>
+<p><a href="{{ retour }}">Annuler et revenir à la liste</a></p>
+{% endblock %}

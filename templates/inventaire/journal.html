@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Journal des commandes simulées</h2>
+<div class="tableau"><table>
+<thead><tr><th>Actionneur</th><th>État demandé</th><th>Utilisateur</th><th>Date locale</th></tr></thead>
+<tbody>{% for commande in page %}
+<tr><td>{{ commande.actionneur }}</td><td>{{ commande.etat_demande|yesno:'Marche,Arrêt' }}</td><td>{{ commande.utilisateur.username }}</td><td>{{ commande.date|date:'d/m/Y H:i:s' }}</td></tr>
+{% empty %}<tr><td colspan="4">Aucune commande.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p>Page {{ page.number }} sur {{ page.paginator.num_pages }}.
+{% if page.has_previous %}<a href="?page={{ page.previous_page_number }}">Précédente</a>{% endif %}
+{% if page.has_next %}<a href="?page={{ page.next_page_number }}">Suivante</a>{% endif %}</p>
+{% endblock %}

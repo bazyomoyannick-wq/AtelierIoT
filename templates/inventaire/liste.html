@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>{{ titre }}</h2>
+<p><a href="{% url 'ajouter' type_element %}">Ajouter une fiche</a></p>
+<form method="get">
+  <label for="q">Rechercher dans les noms</label>
+  <input id="q" name="q" value="{{ q }}">
+  <button>Rechercher</button>
+</form>
+<ul>
+{% for element in page %}
+  <li><a href="{% url 'fiche' type_element element.pk %}">{{ element.nom }}</a> — identifiant {{ element.pk }}</li>
+{% empty %}<li>Aucun résultat.</li>{% endfor %}
+</ul>
+<p>Page {{ page.number }} sur {{ page.paginator.num_pages }}.
+{% if page.has_previous %}<a href="?q={{ q|urlencode }}&amp;page={{ page.previous_page_number }}">Précédente</a>{% endif %}
+{% if page.has_next %}<a href="?q={{ q|urlencode }}&amp;page={{ page.next_page_number }}">Suivante</a>{% endif %}</p>
+{% endblock %}

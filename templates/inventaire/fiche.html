@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>{{ element.nom }}</h2>
+<p>Identifiant : {{ element.pk }}</p>
+{% if type_element == 'objets' %}
+  <p>Emplacement : {{ element.emplacement }}</p>
+  <p>{{ element.description|linebreaksbr }}</p>
+  <p>Actif : {{ element.actif|yesno:'Oui,Non' }}</p>
+  <h3>Capteurs associés</h3>
+  <ul>{% for capteur in element.capteurs.all %}<li><a href="{% url 'fiche' 'capteurs' capteur.pk %}">{{ capteur }}</a></li>{% empty %}<li>Aucun capteur.</li>{% endfor %}</ul>
+  <h3>Actionneurs associés</h3>
+  <ul>{% for actionneur in element.actionneurs.all %}<li><a href="{% url 'fiche' 'actionneurs' actionneur.pk %}">{{ actionneur }}</a></li>{% empty %}<li>Aucun actionneur.</li>{% endfor %}</ul>
+{% elif type_element == 'capteurs' %}
+  <p>Objet : {{ element.objet }} · Type : {{ element.get_type_mesure_display }}</p>
+  <p>Unité : {{ element.unite }} · Plage : {{ element.bornes.0 }} à {{ element.bornes.1 }} · Seuil d’alerte : {{ element.seuil_alerte }}</p>
+  <a href="{% url 'mesures' %}?capteur={{ element.pk }}">Voir les mesures de ce capteur</a>
+{% else %}
+  <p>Objet : {{ element.objet }} · Type : {{ element.get_type_action_display }}</p>
+  <p>État simulé : <strong>{{ element.etat|yesno:'Marche,Arrêt' }}</strong></p>
+  <form method="post" action="{% url 'commande' element.pk %}">
+    {% csrf_token %}
+    <button name="etat" value="on">Marche</button>
+    <button name="etat" value="off">Arrêt</button>
+  </form>
+  <p>La commande change la simulation et crée une ligne au journal.</p>
+{% endif %}
+<p><a href="{% url 'modifier' type_element element.pk %}">Modifier</a>
+{% if user.is_staff %} · <a href="{% url 'supprimer' type_element element.pk %}">Supprimer</a>{% endif %}
+· <a href="{% url 'liste' type_element %}">Retour à la liste</a></p>
+{% endblock %}

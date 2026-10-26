@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Supprimer {{ element.nom }} ?</h2>
+<p>La suppression est possible seulement si aucune autre fiche ni aucun historique ne dépend de cet élément.
+Elle sera inscrite dans l’historique des suppressions avec votre nom et la date.</p>
+<form method="post">{% csrf_token %}<button>Confirmer la suppression</button></form>
+<p><a href="{% url 'fiche' type_element element.pk %}">Annuler</a></p>
+{% endblock %}
