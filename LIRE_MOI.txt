@@ -1,7 +1,7 @@
 PROG1397 - Programmation côté serveur
 Projet : Atelier IoT — Lumière et Distance (basé sur le guide « TP intégrateur Atelier IoT »)
-Nom et prénom : à compléter
-Python utilisé : à compléter
+Nom et prénom : Bazyomo Yannick
+Python utilisé : Python 3.14
 
 ======================================================================
 1. CE QUI CHANGE PAR RAPPORT AU GUIDE
@@ -46,11 +46,11 @@ Ajouts demandés :
 ======================================================================
 3. JEU DE DONNÉES SUGGÉRÉ
 ======================================================================
-Objet « Serre A » (Local 101) :
+Objet « Serre A » (Salle N377) :
   - Capteur « Lumière A »   luminosite, seuil 300 lux
   - Capteur « Distance A »  distance,   seuil 20 cm
   - Actionneur « Lampe A »  lampe
-Objet « Stationnement B » (Entrée) :
+Objet « Stationnement B » (Bathurst) :
   - Capteur « Lumière B »   luminosite, seuil 150 lux
   - Capteur « Distance B »  distance,   seuil 10 cm
   - Actionneur « Barrière B » barrière
@@ -63,6 +63,7 @@ clique Marche sur la lampe. Si un véhicule est à moins de 10 cm, ALERTE
 ======================================================================
 Deuxième terminal :
   .\.venv\Scripts\python.exe manage.py drf_create_token votre_identifiant
+  $env:JETON_API = "votre_jeton"
   .\.venv\Scripts\python.exe simuler.py --capteur 1 --type luminosite --nombre 10
   .\.venv\Scripts\python.exe simuler.py --capteur 2 --type distance --nombre 10
 Forcer une alerte :      --minimum 100 --maximum 100 --nombre 1
@@ -94,4 +95,6 @@ Tableau des codes testés :
 Ne pas remettre : .venv, .cle_locale, db.sqlite3, __pycache__, jetons.
 Données de démonstration :
   .\.venv\Scripts\python.exe manage.py dumpdata inventaire.Objet inventaire.Capteur inventaire.Actionneur inventaire.Mesure --indent 2 --output donnees_demo.json
-Limites connues : à décrire.
+Personnalisations : en-tête moderne (dégradé indigo/turquoise, logo, onglets, badge de rôle),
+objets Serre A (Salle N377) et Stationnement B (Bathurst), simulateur avec variable JETON_API.
+Limites connues : aucun matériel réel; le navigateur doit être actualisé pour voir les nouvelles mesures.

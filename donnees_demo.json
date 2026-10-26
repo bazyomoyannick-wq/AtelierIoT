@@ -1,0 +1,373 @@
+[
+{
+  "model": "inventaire.objet",
+  "pk": 1,
+  "fields": {
+    "nom": "Serre A",
+    "emplacement": "Salle N377",
+    "description": "Petite serre simulée",
+    "actif": true
+  }
+},
+{
+  "model": "inventaire.objet",
+  "pk": 2,
+  "fields": {
+    "nom": "Stationnement B",
+    "emplacement": "Bathurst",
+    "description": "Entrée de stationnement simulée. Un capteur de distance (HC-SR04) détecte un véhicule proche de la barrière et un capteur de luminosité indique s'il fait trop sombre pour éclairer l'entrée. Une barrière commandée par servomoteur s'ouvre à la demande.",
+    "actif": true
+  }
+},
+{
+  "model": "inventaire.objet",
+  "pk": 3,
+  "fields": {
+    "nom": "Serre 1793054324691",
+    "emplacement": "Local 102",
+    "description": "",
+    "actif": true
+  }
+},
+{
+  "model": "inventaire.capteur",
+  "pk": 1,
+  "fields": {
+    "objet": 1,
+    "nom": "Lumière A",
+    "type_mesure": "luminosite",
+    "seuil_alerte": "300.00"
+  }
+},
+{
+  "model": "inventaire.capteur",
+  "pk": 2,
+  "fields": {
+    "objet": 1,
+    "nom": "Distance A",
+    "type_mesure": "distance",
+    "seuil_alerte": "20.00"
+  }
+},
+{
+  "model": "inventaire.capteur",
+  "pk": 3,
+  "fields": {
+    "objet": 2,
+    "nom": "Lumière B",
+    "type_mesure": "luminosite",
+    "seuil_alerte": "150.00"
+  }
+},
+{
+  "model": "inventaire.capteur",
+  "pk": 4,
+  "fields": {
+    "objet": 2,
+    "nom": "Distance B",
+    "type_mesure": "distance",
+    "seuil_alerte": "10.00"
+  }
+},
+{
+  "model": "inventaire.capteur",
+  "pk": 5,
+  "fields": {
+    "objet": 3,
+    "nom": "Lumière 1793054324691",
+    "type_mesure": "luminosite",
+    "seuil_alerte": "300.00"
+  }
+},
+{
+  "model": "inventaire.actionneur",
+  "pk": 1,
+  "fields": {
+    "objet": 1,
+    "nom": "Lampe A",
+    "type_action": "lampe",
+    "etat": true
+  }
+},
+{
+  "model": "inventaire.actionneur",
+  "pk": 2,
+  "fields": {
+    "objet": 2,
+    "nom": "Barrière B",
+    "type_action": "barriere",
+    "etat": false
+  }
+},
+{
+  "model": "inventaire.actionneur",
+  "pk": 3,
+  "fields": {
+    "objet": 3,
+    "nom": "Lampe 1793054324691",
+    "type_action": "lampe",
+    "etat": false
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 1,
+  "fields": {
+    "capteur": 1,
+    "valeur": "500.00",
+    "date": "2026-10-26T19:15:49.059Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 2,
+  "fields": {
+    "capteur": 1,
+    "valeur": "120.00",
+    "date": "2026-10-26T19:16:24.408Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 3,
+  "fields": {
+    "capteur": 1,
+    "valeur": "400.00",
+    "date": "2026-10-26T19:16:40.860Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 4,
+  "fields": {
+    "capteur": 1,
+    "valeur": "120.00",
+    "date": "2026-10-26T19:21:28.881Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 5,
+  "fields": {
+    "capteur": 4,
+    "valeur": "5.00",
+    "date": "2026-10-26T19:22:08.985Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 6,
+  "fields": {
+    "capteur": 1,
+    "valeur": "899.23",
+    "date": "2026-10-26T21:55:38.554Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 7,
+  "fields": {
+    "capteur": 1,
+    "valeur": "481.17",
+    "date": "2026-10-26T21:55:40.679Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 8,
+  "fields": {
+    "capteur": 1,
+    "valeur": "875.48",
+    "date": "2026-10-26T21:55:42.806Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 9,
+  "fields": {
+    "capteur": 1,
+    "valeur": "94.03",
+    "date": "2026-10-26T21:55:45.025Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 10,
+  "fields": {
+    "capteur": 1,
+    "valeur": "579.18",
+    "date": "2026-10-26T21:55:47.251Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 11,
+  "fields": {
+    "capteur": 1,
+    "valeur": "755.44",
+    "date": "2026-10-26T21:55:49.335Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 12,
+  "fields": {
+    "capteur": 1,
+    "valeur": "484.03",
+    "date": "2026-10-26T21:55:51.455Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 13,
+  "fields": {
+    "capteur": 1,
+    "valeur": "568.05",
+    "date": "2026-10-26T21:55:53.649Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 14,
+  "fields": {
+    "capteur": 1,
+    "valeur": "63.75",
+    "date": "2026-10-26T21:55:55.810Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 15,
+  "fields": {
+    "capteur": 1,
+    "valeur": "298.88",
+    "date": "2026-10-26T21:55:58.002Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 16,
+  "fields": {
+    "capteur": 4,
+    "valeur": "30.70",
+    "date": "2026-10-26T21:59:27.956Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 17,
+  "fields": {
+    "capteur": 4,
+    "valeur": "319.32",
+    "date": "2026-10-26T21:59:30.102Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 18,
+  "fields": {
+    "capteur": 4,
+    "valeur": "237.72",
+    "date": "2026-10-26T21:59:32.240Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 19,
+  "fields": {
+    "capteur": 4,
+    "valeur": "300.33",
+    "date": "2026-10-26T21:59:34.369Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 20,
+  "fields": {
+    "capteur": 4,
+    "valeur": "328.70",
+    "date": "2026-10-26T21:59:36.474Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 21,
+  "fields": {
+    "capteur": 4,
+    "valeur": "32.19",
+    "date": "2026-10-26T21:59:38.669Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 22,
+  "fields": {
+    "capteur": 4,
+    "valeur": "29.59",
+    "date": "2026-10-26T21:59:40.808Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 23,
+  "fields": {
+    "capteur": 4,
+    "valeur": "18.36",
+    "date": "2026-10-26T21:59:42.923Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 24,
+  "fields": {
+    "capteur": 4,
+    "valeur": "147.80",
+    "date": "2026-10-26T21:59:45.035Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 25,
+  "fields": {
+    "capteur": 4,
+    "valeur": "325.08",
+    "date": "2026-10-26T21:59:47.137Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 26,
+  "fields": {
+    "capteur": 1,
+    "valeur": "100.00",
+    "date": "2026-10-26T22:00:06.742Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 27,
+  "fields": {
+    "capteur": 5,
+    "valeur": "450.50",
+    "date": "2026-10-26T22:38:48.901Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 28,
+  "fields": {
+    "capteur": 5,
+    "valeur": "120.00",
+    "date": "2026-10-26T22:38:49.050Z"
+  }
+},
+{
+  "model": "inventaire.mesure",
+  "pk": 29,
+  "fields": {
+    "capteur": 5,
+    "valeur": "158.50",
+    "date": "2026-10-26T22:38:50.866Z"
+  }
+}
+]
