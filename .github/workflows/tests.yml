@@ -1,0 +1,23 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - name: Installer les dépendances
+        run: pip install -r requirements.txt
+      - name: Vérifier le projet
+        run: python manage.py check
+      - name: Vérifier les migrations
+        run: python manage.py makemigrations --check --dry-run
+      - name: Lancer les tests
+        run: python manage.py test
