@@ -58,6 +58,7 @@ def tableau(request):
     return render(request, 'inventaire/tableau.html', {
         'nb_objets': Objet.objects.count(), 'nb_capteurs': Capteur.objects.count(),
         'nb_actionneurs': Actionneur.objects.count(), 'lignes': lignes,
+        'nb_alertes': sum(1 for ligne in lignes if ligne['alerte']),
     })
 
 

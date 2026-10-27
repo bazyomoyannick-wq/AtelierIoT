@@ -1,20 +1,28 @@
 {% extends 'base.html' %}
 {% block contenu %}
 <h2>Tableau de bord</h2>
-<p class="bilan">{{ nb_objets }} objets · {{ nb_capteurs }} capteurs · {{ nb_actionneurs }} actionneurs</p>
-<p>Une alerte signifie que la dernière valeur est <strong>strictement sous</strong> le seuil :
+
+<div class="cartes">
+  <a class="carte" href="{% url 'liste' 'objets' %}"><span class="carte-chiffre">{{ nb_objets }}</span><span class="carte-label">Objets</span></a>
+  <a class="carte" href="{% url 'liste' 'capteurs' %}"><span class="carte-chiffre">{{ nb_capteurs }}</span><span class="carte-label">Capteurs</span></a>
+  <a class="carte" href="{% url 'liste' 'actionneurs' %}"><span class="carte-chiffre">{{ nb_actionneurs }}</span><span class="carte-label">Actionneurs</span></a>
+  <div class="carte {% if nb_alertes %}carte-alerte{% endif %}"><span class="carte-chiffre">{{ nb_alertes }}</span><span class="carte-label">Alertes actives</span></div>
+</div>
+
+<p class="aide">Une alerte signifie que la dernière valeur est <strong>strictement sous</strong> le seuil :
 trop sombre (luminosité) ou obstacle trop proche (distance). Actualisez la page pour lire les nouvelles mesures.</p>
+
 <div class="tableau"><table>
 <thead><tr><th>Objet</th><th>Capteur</th><th>Dernière valeur</th><th>Seuil</th><th>Date locale</th><th>État</th></tr></thead>
 <tbody>
 {% for ligne in lignes %}
 <tr>
-  <td>{{ ligne.capteur.objet }}{% if not ligne.capteur.objet.actif %} (désactivé){% endif %}</td>
+  <td>{{ ligne.capteur.objet }}{% if not ligne.capteur.objet.actif %} <span class="badge badge-gris">désactivé</span>{% endif %}</td>
   <td><a href="{% url 'fiche' 'capteurs' ligne.capteur.pk %}">{{ ligne.capteur.nom }}</a></td>
-  <td>{% if ligne.mesure %}{{ ligne.mesure.valeur }} {{ ligne.capteur.unite }}{% else %}Aucune mesure{% endif %}</td>
+  <td>{% if ligne.mesure %}<strong>{{ ligne.mesure.valeur }}</strong> {{ ligne.capteur.unite }}{% else %}—{% endif %}</td>
   <td>{{ ligne.capteur.seuil_alerte }} {{ ligne.capteur.unite }}</td>
   <td>{{ ligne.mesure.date|date:'d/m/Y H:i:s' }}</td>
-  <td>{% if not ligne.mesure %}En attente{% elif ligne.alerte %}<strong class="alerte">ALERTE</strong>{% else %}Normal{% endif %}</td>
+  <td>{% if not ligne.mesure %}<span class="badge badge-gris">En attente</span>{% elif ligne.alerte %}<span class="badge badge-alerte">ALERTE</span>{% else %}<span class="badge badge-ok">Normal</span>{% endif %}</td>
 </tr>
 {% empty %}<tr><td colspan="6">Commencez par créer un objet, puis un capteur.</td></tr>{% endfor %}
 </tbody></table></div>

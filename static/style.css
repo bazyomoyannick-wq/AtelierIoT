@@ -52,3 +52,15 @@ code { font-size: .8rem; word-break: break-word; }
   .marque-sous { display: none; }
   .compte-info { display: none; }
 }
+/* ---------- Tableau de bord : cartes et badges ---------- */
+.cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
+.carte { display: flex; flex-direction: column; gap: .2rem; padding: 1rem 1.2rem; border-radius: 14px;
+  background: #f5f7ff; border: 1px solid #dfe3f5; color: #1e1b4b; text-decoration: none; transition: transform .15s, box-shadow .15s; }
+a.carte:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 27, 75, .12); }
+.carte-chiffre { font-size: 2rem; font-weight: 700; line-height: 1.1; }
+.carte-label { font-size: .9rem; color: #4b5563; }
+.carte-alerte { background: #fdecee; border-color: #f5c2c8; color: #a51624; }
+.badge { display: inline-block; padding: .15rem .6rem; border-radius: 999px; font-size: .8rem; font-weight: 700; letter-spacing: .3px; }
+.badge-ok { background: #dcfce7; color: #166534; }
+.badge-alerte { background: #fde2e4; color: #a51624; }
+.badge-gris { background: #eceff3; color: #4b5563; }
