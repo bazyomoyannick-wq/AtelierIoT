@@ -7,6 +7,7 @@
   <a class="carte" href="{% url 'liste' 'capteurs' %}"><span class="carte-chiffre">{{ nb_capteurs }}</span><span class="carte-label">Capteurs</span></a>
   <a class="carte" href="{% url 'liste' 'actionneurs' %}"><span class="carte-chiffre">{{ nb_actionneurs }}</span><span class="carte-label">Actionneurs</span></a>
   <div class="carte {% if nb_alertes %}carte-alerte{% endif %}"><span class="carte-chiffre">{{ nb_alertes }}</span><span class="carte-label">Alertes actives</span></div>
+  <a class="carte {% if nb_refus %}carte-alerte{% endif %}" href="{% url 'acces-journal' %}?filtre=refuses"><span class="carte-chiffre">{{ nb_refus }}</span><span class="carte-label">Accès refusés (24 h)</span></a>
 </div>
 
 <p class="aide">Une alerte signifie que la dernière valeur est <strong>strictement sous</strong> le seuil :

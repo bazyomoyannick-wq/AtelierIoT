@@ -1412,7 +1412,752 @@
       ]
     },
     {
-      "name": "6 - Simulation (lancer ce dossier avec 10 itérations)",
+      "name": "6 - Accès RFID",
+      "item": [
+        {
+          "name": "Admin crée une porte (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('porte_id', pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/portes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "portes",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Porte {{suffixe}}\",\n  \"objet\": {{objet_id}},\n  \"duree_ouverture\": 5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Utilisateur crée une porte (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/portes/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "portes",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nom\": \"Porte refusée {{suffixe}}\",\n  \"objet\": {{objet_id}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Utilisateur crée un badge (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/badges/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "badges",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"uid\": \"11223344\",\n  \"titulaire\": \"Intrus\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Badge UID mal formé (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/badges/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "badges",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"uid\": \"XYZ\",\n  \"titulaire\": \"Test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Admin crée un badge (201)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 201', () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set('badge_id', pm.response.json().id);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const hex = () => Math.floor(Math.random()*256).toString(16).padStart(2,'0').toUpperCase();",
+                  "pm.collectionVariables.set('badge_uid', hex()+hex()+hex()+hex());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/badges/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "badges",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"uid\": \"{{badge_uid}}\",\n  \"titulaire\": \"Yannick\",\n  \"portes\": [\n    {{porte_id}}\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Badge autorisé ouvre la porte (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('autorise = true et ouverture 5 s', () => { const j = pm.response.json(); pm.expect(j.autorise).to.be.true; pm.expect(j.ouvrir_secondes).to.eql(5); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": {{porte_id}},\n  \"uid\": \"{{badge_uid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Badge inconnu refusé (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": {{porte_id}},\n  \"uid\": \"00000000000000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "UID mal formé (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": {{porte_id}},\n  \"uid\": \"12-34\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Porte inexistante (404)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 404', () => pm.response.to.have.status(404));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": 999999,\n  \"uid\": \"{{badge_uid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Lecteur sans jeton (401)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 401', () => pm.response.to.have.status(401));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": {{porte_id}},\n  \"uid\": \"{{badge_uid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "GET sur /api/acces/ (405)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 405', () => pm.response.to.have.status(405));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin désactive le badge (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/badges/{{badge_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "badges",
+                "{{badge_id}}",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actif\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Badge désactivé refusé (403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 403', () => pm.response.to.have.status(403));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));",
+                  "pm.test('Raison : badge désactivé', () => pm.expect(pm.response.json().message).to.include('désactivé'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "acces",
+                ""
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"porte\": {{porte_id}},\n  \"uid\": \"{{badge_uid}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "Journal des accès (200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Au moins 3 passages journalisés', () => pm.expect(pm.response.json().count).to.be.at.least(3));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{user_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/journal-acces/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "journal-acces",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Admin supprime le badge (204)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 204', () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/badges/{{badge_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "badges",
+                "{{badge_id}}",
+                ""
+              ]
+            }
+          }
+        },
+        {
+          "name": "Porte avec historique protégée (400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Code HTTP 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Feedback : message présent', () => pm.expect(pm.response.json()).to.have.property('message'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Token {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/portes/{{porte_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "portes",
+                "{{porte_id}}",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "7 - Simulation (lancer ce dossier avec 10 itérations)",
       "item": [
         {
           "name": "Envoyer une mesure aléatoire (201)",
@@ -1517,6 +2262,18 @@
     },
     {
       "key": "valeur_simulee",
+      "value": ""
+    },
+    {
+      "key": "porte_id",
+      "value": ""
+    },
+    {
+      "key": "badge_id",
+      "value": ""
+    },
+    {
+      "key": "badge_uid",
       "value": ""
     }
   ]

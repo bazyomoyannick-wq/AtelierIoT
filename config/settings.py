@@ -8,12 +8,15 @@ if not key_file.exists():
     key_file.write_text(get_random_secret_key(), encoding='utf-8')
 SECRET_KEY = key_file.read_text(encoding='utf-8').strip()
 DEBUG = True
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+import os
+# Pour un lecteur RFID sur le réseau local : $env:HOTES_SUPPLEMENTAIRES = "192.168.1.25"
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost'] + [
+    h.strip() for h in os.environ.get('HOTES_SUPPLEMENTAIRES', '').split(',') if h.strip()]
 INSTALLED_APPS = [
     'django.contrib.admin', 'django.contrib.auth',
     'django.contrib.contenttypes', 'django.contrib.sessions',
     'django.contrib.messages', 'django.contrib.staticfiles',
-    'rest_framework', 'rest_framework.authtoken', 'inventaire',
+    'rest_framework', 'rest_framework.authtoken', 'inventaire', 'acces',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

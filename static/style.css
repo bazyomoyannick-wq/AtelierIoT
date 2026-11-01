@@ -18,7 +18,7 @@ code { font-size: .8rem; word-break: break-word; }
 .aide { color: #4b5b4d; font-size: .95rem; }
 .bilan { font-size: 1.25rem; }
 
-
+/* ---------- En-tête moderne ---------- */
 .entete {
   position: sticky; top: 0; z-index: 10;
   background: linear-gradient(120deg, #1e1b4b 0%, #312e81 55%, #0f766e 100%);
@@ -52,6 +52,7 @@ code { font-size: .8rem; word-break: break-word; }
   .marque-sous { display: none; }
   .compte-info { display: none; }
 }
+
 /* ---------- Tableau de bord : cartes et badges ---------- */
 .cartes { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin: 1rem 0 1.5rem; }
 .carte { display: flex; flex-direction: column; gap: .2rem; padding: 1rem 1.2rem; border-radius: 14px;
@@ -64,3 +65,6 @@ a.carte:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(30, 27,
 .badge-ok { background: #dcfce7; color: #166534; }
 .badge-alerte { background: #fde2e4; color: #a51624; }
 .badge-gris { background: #eceff3; color: #4b5563; }
+
+/* ---------- Cases à cocher (portes d'un badge) ---------- */
+label input[type=checkbox] { display: inline-block; margin: 0 .4rem 0 0; vertical-align: middle; }

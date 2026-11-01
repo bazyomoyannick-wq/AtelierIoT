@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>{{ titre }}</h2>
+<p><a href="{% url 'acces-ajouter' type_element %}">Ajouter</a> ·
+{% if type_element == 'badges' %}<a href="{% url 'acces-gestion' 'portes' %}">Gérer les portes</a>{% else %}<a href="{% url 'acces-gestion' 'badges' %}">Gérer les badges</a>{% endif %}
+· <a href="{% url 'acces-journal' %}">Journal des accès</a></p>
+<div class="tableau"><table>
+{% if type_element == 'badges' %}
+<thead><tr><th>Titulaire</th><th>UID</th><th>État</th><th>Expiration</th><th>Portes autorisées</th><th>Actions</th></tr></thead>
+<tbody>{% for b in elements %}
+<tr>
+  <td>{{ b.titulaire }}</td><td><code>{{ b.uid }}</code></td>
+  <td>{% if not b.actif %}<span class="badge badge-gris">Désactivé</span>{% elif b.expire %}<span class="badge badge-alerte">Expiré</span>{% else %}<span class="badge badge-ok">Actif</span>{% endif %}</td>
+  <td>{{ b.expiration|date:'d/m/Y'|default:'—' }}</td>
+  <td>{{ b.portes.all|join:', '|default:'Aucune' }}</td>
+  <td><a href="{% url 'acces-modifier' 'badges' b.pk %}">Modifier</a> · <a href="{% url 'acces-supprimer' 'badges' b.pk %}">Supprimer</a></td>
+</tr>
+{% empty %}<tr><td colspan="6">Aucun badge.</td></tr>{% endfor %}</tbody>
+{% else %}
+<thead><tr><th>Nom</th><th>Objet protégé</th><th>Ouverture</th><th>Badges autorisés</th><th>Actions</th></tr></thead>
+<tbody>{% for p in elements %}
+<tr>
+  <td>{{ p.nom }} <small>(identifiant {{ p.pk }})</small></td><td>{{ p.objet }}</td><td>{{ p.duree_ouverture }} s</td>
+  <td>{{ p.badges.count }}</td>
+  <td><a href="{% url 'acces-modifier' 'portes' p.pk %}">Modifier</a> · <a href="{% url 'acces-supprimer' 'portes' p.pk %}">Supprimer</a></td>
+</tr>
+{% empty %}<tr><td colspan="5">Aucune porte.</td></tr>{% endfor %}</tbody>
+{% endif %}
+</table></div>
+{% endblock %}

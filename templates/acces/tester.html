@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Tester un badge</h2>
+<p class="aide">Simule le lecteur RFID de la porte : le serveur applique exactement les mêmes règles
+que pour un vrai lecteur, et la tentative est inscrite au journal.</p>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>Présenter le badge</button>
+</form>
+<p><a href="{% url 'acces-journal' %}">Voir le journal des accès</a></p>
+{% endblock %}

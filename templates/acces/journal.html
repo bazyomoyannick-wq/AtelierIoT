@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block contenu %}
+<h2>Journal des accès RFID</h2>
+<p>Chaque passage de badge est enregistré, qu’il soit accepté ou refusé.
+<a href="{% url 'acces-tester' %}">Tester un badge</a>{% if user.is_staff %} · <a href="{% url 'acces-gestion' 'badges' %}">Gérer les badges</a> · <a href="{% url 'acces-gestion' 'portes' %}">Gérer les portes</a>{% endif %}</p>
+<p>
+  <a href="?">Tous</a> ·
+  <a href="?filtre=autorises">Autorisés</a> ·
+  <a href="?filtre=refuses">Refusés</a>
+</p>
+<div class="tableau"><table>
+<thead><tr><th>Date locale</th><th>Porte</th><th>UID lu</th><th>Titulaire</th><th>Résultat</th><th>Raison</th></tr></thead>
+<tbody>{% for a in page %}
+<tr>
+  <td>{{ a.date|date:'d/m/Y H:i:s' }}</td>
+  <td>{{ a.porte }}</td>
+  <td><code>{{ a.uid_lu }}</code></td>
+  <td>{{ a.badge.titulaire|default:'—' }}</td>
+  <td>{% if a.autorise %}<span class="badge badge-ok">AUTORISÉ</span>{% else %}<span class="badge badge-alerte">REFUSÉ</span>{% endif %}</td>
+  <td>{{ a.raison }}</td>
+</tr>
+{% empty %}<tr><td colspan="6">Aucun passage enregistré.</td></tr>{% endfor %}</tbody>
+</table></div>
+<p>Page {{ page.number }} sur {{ page.paginator.num_pages }}.
+{% if page.has_previous %}<a href="?filtre={{ filtre }}&amp;page={{ page.previous_page_number }}">Précédente</a>{% endif %}
+{% if page.has_next %}<a href="?filtre={{ filtre }}&amp;page={{ page.next_page_number }}">Suivante</a>{% endif %}</p>
+{% endblock %}

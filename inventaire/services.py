@@ -5,7 +5,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 import json
 from .models import Actionneur, Commande, HistoriqueSuppression
 
-TYPES_ELEMENTS = {'Objet': 'objets', 'Capteur': 'capteurs', 'Actionneur': 'actionneurs'}
+TYPES_ELEMENTS = {'Objet': 'objets', 'Capteur': 'capteurs', 'Actionneur': 'actionneurs',
+                  'Badge': 'badges', 'Porte': 'portes'}
 
 
 @transaction.atomic
@@ -23,7 +24,11 @@ def commander(actionneur_id, utilisateur, etat):
 def supprimer_avec_historique(element, utilisateur):
     """Supprime une fiche et garde une trace (données, auteur, date).
     Si la suppression est bloquée (ProtectedError), rien n'est écrit dans l'historique."""
-    donnees = json.loads(json.dumps(model_to_dict(element), cls=DjangoJSONEncoder))
+    donnees = model_to_dict(element)
+    for cle, valeur in donnees.items():
+        if isinstance(valeur, list):   # ManyToMany (ex. portes d'un badge) : on garde les identifiants
+            donnees[cle] = [getattr(v, 'pk', v) for v in valeur]
+    donnees = json.loads(json.dumps(donnees, cls=DjangoJSONEncoder))
     type_element = TYPES_ELEMENTS.get(type(element).__name__, type(element).__name__)
     element_id, nom = element.pk, str(getattr(element, 'nom', element))
     element.delete()

@@ -35,6 +35,7 @@
     {% url 'tableau' as u_tableau %}{% url 'liste' 'objets' as u_objets %}{% url 'liste' 'capteurs' as u_capteurs %}
     {% url 'liste' 'actionneurs' as u_actionneurs %}{% url 'mesures' as u_mesures %}{% url 'journal' as u_journal %}
     {% url 'suppressions' as u_suppr %}{% url 'inscription' as u_inscr %}
+    {% url 'acces-journal' as u_acces %}{% url 'acces-gestion' 'badges' as u_badges %}
     <nav class="onglets" aria-label="Navigation principale">
       <a href="{{ u_tableau }}" {% if request.path == u_tableau %}class="actif" aria-current="page"{% endif %}>Tableau de bord</a>
       <a href="{{ u_objets }}" {% if u_objets in request.path %}class="actif" aria-current="page"{% endif %}>Objets</a>
@@ -42,7 +43,9 @@
       <a href="{{ u_actionneurs }}" {% if u_actionneurs in request.path %}class="actif" aria-current="page"{% endif %}>Actionneurs</a>
       <a href="{{ u_mesures }}" {% if request.path == u_mesures %}class="actif" aria-current="page"{% endif %}>Mesures</a>
       <a href="{{ u_journal }}" {% if request.path == u_journal %}class="actif" aria-current="page"{% endif %}>Commandes</a>
+      <a href="{{ u_acces }}" {% if u_acces in request.path and '/gestion/' not in request.path %}class="actif" aria-current="page"{% endif %}>Accès RFID</a>
       {% if user.is_staff %}
+      <a href="{{ u_badges }}" {% if '/acces/gestion/' in request.path %}class="actif" aria-current="page"{% endif %}>Badges</a>
       <a href="{{ u_suppr }}" {% if request.path == u_suppr %}class="actif" aria-current="page"{% endif %}>Suppressions</a>
       <a href="{{ u_inscr }}" {% if request.path == u_inscr %}class="actif" aria-current="page"{% endif %}>Créer un compte</a>
       {% endif %}

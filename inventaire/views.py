@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from .forms import ObjetForm, CapteurForm, ActionneurForm, MesureForm, InscriptionForm
 from .models import Objet, Capteur, Actionneur, Mesure, Commande, HistoriqueSuppression
 from .services import commander, supprimer_avec_historique
+from acces.services import refus_derniere_24h
 
 CATALOGUE = {
     'objets': (Objet, ObjetForm, 'Objets intelligents'),
@@ -59,6 +60,7 @@ def tableau(request):
         'nb_objets': Objet.objects.count(), 'nb_capteurs': Capteur.objects.count(),
         'nb_actionneurs': Actionneur.objects.count(), 'lignes': lignes,
         'nb_alertes': sum(1 for ligne in lignes if ligne['alerte']),
+        'nb_refus': refus_derniere_24h(),
     })
 
 
